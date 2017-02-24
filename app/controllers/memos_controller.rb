@@ -4,7 +4,11 @@ class MemosController < ApplicationController
   # GET /memos
   # GET /memos.json
   def index
-    @memos = Memo.all
+    if current_user
+      @memos = current_user.memos
+    else
+      @memos = []
+    end
   end
 
   # GET /memos/1
@@ -14,7 +18,7 @@ class MemosController < ApplicationController
 
   # GET /memos/new
   def new
-    @memo = Memo.new
+    @memo = current_user.memos.create
   end
 
   # GET /memos/1/edit
