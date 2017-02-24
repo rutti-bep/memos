@@ -42,7 +42,6 @@
             %li= link_to "Link3", "/path3"
             - if logged_in?
               %li= link_to 'ログアウト', session_path, method: :delete, class: 'btn btn-primary'
-              %li= current_user.name
             - else
               %li= link_to 'ログイン', '/auth/twitter', class: 'btn btn-primary'
 

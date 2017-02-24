@@ -4,11 +4,7 @@ class MemosController < ApplicationController
   # GET /memos
   # GET /memos.json
   def index
-    if current_user
-      @memos = current_user.memos
-    else
-      @memos = []
-    end
+    @memos = Memo.all
   end
 
   # GET /memos/1
@@ -18,7 +14,7 @@ class MemosController < ApplicationController
 
   # GET /memos/new
   def new
-    @memo = current_user.memos.create
+    @memo = Memo.new
   end
 
   # GET /memos/1/edit
@@ -28,6 +24,14 @@ class MemosController < ApplicationController
   # POST /memos
   # POST /memos.json
   def create
+    client  = Twitter::REST::Client.new do |config|
+      config.consumer_key        = ENV['TWITTER_KEY']
+      config.consumer_secret     = ENV['TWITTER_SECRET']
+      config.access_token        = session['oauth_token']
+      config.access_token_secret = session['oauth_token_secret']
+    end
+    client.update("新しいblogが書かれたよ！ title: #{memo_params['title']}")
+
     @memo = Memo.new(memo_params)
 
     respond_to do |format|
@@ -44,6 +48,14 @@ class MemosController < ApplicationController
   # PATCH/PUT /memos/1
   # PATCH/PUT /memos/1.json
   def update
+    client  = Twitter::REST::Client.new do |config|
+      config.consumer_key        = ENV['TWITTER_KEY']
+      config.consumer_secret     = ENV['TWITTER_SECRET']
+      config.access_token        = session['oauth_token']
+      config.access_token_secret = session['oauth_token_secret']
+    end
+    client.update("blogが編集されたよ！ title: #{memo_params['title']}")
+    
     respond_to do |format|
       if @memo.update(memo_params)
         format.html { redirect_to @memo, notice: 'Memo was successfully updated.' }
@@ -66,13 +78,14 @@ class MemosController < ApplicationController
   end
 
   private
-    # Use callbacks to share common setup or constraints between actions.
-    def set_memo
-      @memo = Memo.find(params[:id])
-    end
+  # Use callbacks to share common setup or constraints between actions.
+  def set_memo
+    @memo = Memo.find(params[:id])
+  end
 
-    # Never trust parameters from the scary internet, only allow the white list through.
-    def memo_params
-      params.require(:memo).permit(:title, :body)
-    end
+  # Never trust parameters from the scary internet, only allow the white list through.
+  def memo_params
+    params.require(:memo).permit(:title, :body)
+  end
+
 end
