@@ -44,7 +44,7 @@
               %li= link_to 'ログアウト', session_path, method: :delete, class: 'btn btn-primary'
               %li= current_user.name
             - else
-              %li= link_to 'ログイン', '/session/new', class: 'btn btn-primary'
+              %li= link_to 'ログイン', '/auth/twitter', class: 'btn btn-primary'
 
     .container
       .row
