@@ -14,7 +14,7 @@ class MemosController < ApplicationController
 
   # GET /memos/new
   def new
-    @memo = Memo.new
+    @memo = current_user.memos.create
   end
 
   # GET /memos/1/edit

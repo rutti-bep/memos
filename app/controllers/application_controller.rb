@@ -1,22 +1,25 @@
 class ApplicationController < ActionController::Base
   protect_from_forgery with: :exception
   helper_method :current_user,:logged_in?
-  #  before_action :access_redirect,except: [:create,:new]
+  before_action :access_redirect,except: [:index,:create,:show]
 
   private
 
   def current_user
-    return unless session[:user_id]
-    @current_user ||= User.find(session[:user_id])
+    if session[:user_id] != nil
+      @current_user ||= User.find_by(twitter_id: session[:user_id])
+    else
+      nil
+    end
   end
 
   def logged_in?
-    session[:nickname] == ENV['NICKNAME']
+    current_user != nil
   end
 
   def access_redirect
     unless logged_in?
-      redirect_to '/session/new'
+      redirect_to root_path, alert:'アクセスできないよん...'
     end
   end
 
